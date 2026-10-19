@@ -28,7 +28,7 @@
 <header class="publication-header container">
   <h1>
     <span class="project-name">PRISM</span>
-    <span class="paper-title"><u>Pri</u>vileged <u>S</u>ibling-Guided <u>M</u>ulti-Agent Topology Design</span>
+    <span class="paper-title"><u>PRI</u>vileged <u>S</u>ibling-Guided <u>M</u>ulti-Agent Topology Design</span>
   </h1>
   <div class="authors">
     <span><a href="https://tuandattt.github.io/">Phuong Tuan Dat</a><sup>1</sup>,</span>
@@ -99,20 +99,20 @@
         <div class="equation-block">\[P_\theta(G\mid Q,\mathcal{R})=\prod_{i=1}^{|V|} \underbrace{P_\theta(v_i\mid G_{&lt;i},Q,\mathcal{R})}_{\text{node generation}}\;\prod_{j=1}^{i-1}\underbrace{P_\theta(e_{ji}\mid v_i,G_{&lt;i},Q)}_{\text{edge generation}}\]</div>
         <p style="margin-top:14px">The verified corpus \(\mathcal{D}\) holds every blueprint graph (chain, star, layered, fully-connected, mesh) that solved a training query. A query is typically solved by several distinct topologies, and none of them is marked as preferable.</p>
       </div>
-      <div class="stage-grid">
-        <div class="stage-card">
+      <div class="stage-timeline">
+        <div data-stage="0" class="stage-card">
           <span class="step">STAGE 0 · COLD START</span>
           <h3>Fit the designer on verified graphs</h3>
           <p>ARG-Designer is trained on execution-verified query–graph pairs, giving the deployed checkpoint \(\theta_0\). The same corpus later supplies the privileged sibling graphs.</p>
         </div>
-        <div class="stage-card">
+        <div data-stage="1" class="stage-card">
           <span class="step">STAGE 1 · PRIVILEGED TEACHER</span>
           <h3>A clone that reads a sibling graph</h3>
           <p>The teacher is a copy of \(\theta_0\) whose conditioning vector is FiLM-modulated by a rank-16 encoding of a sibling graph \(a\):</p>
           <div class="equation-block">\[c_{\text{teacher}}=\mathrm{TaskProc}(f_Q)\odot\big(1+\gamma(f_a)\big)+\beta(f_a)\]</div>
           <p style="margin-top:10px">The FiLM output is zero-initialized, so the teacher starts identical to the student. The sibling is drawn uniformly from the other verified graphs for the same query and resampled every epoch. The channel adds about 20k parameters.</p>
         </div>
-        <div class="stage-card ours wide">
+        <div data-stage="2" class="stage-card ours">
           <span class="step">STAGE 2 · ON-POLICY SELF-DISTILLATION</span>
           <h3>Correct the student where it actually goes</h3>
           <p>The student samples \(M=4\) complete topologies per query. The frozen teacher (with \(a\)) and the student (without \(a\)) rescore them. Their node and edge decision spaces are small and categorical, so the divergence is computed exactly:</p>
@@ -120,7 +120,7 @@
           <div class="equation-block">\[\mathcal{L}_{\text{PRISM}}=(1-\lambda)\,\mathcal{L}_{\mathrm{KL}}+\lambda\,\underbrace{\big(-\log P_\theta(G_{\text{real}}\mid Q)\big)}_{\mathcal{L}_{\text{anchor}}}\]</div>
           <p style="margin-top:10px">Defaults are \(\alpha=0.2\), \(\lambda=0.3\) and reverse KL. Setting \(\lambda=1\) recovers the SFT control.</p>
         </div>
-        <div class="stage-card wide">
+        <div data-stage="3" class="stage-card">
           <span class="step">STAGE 3 · DEPLOYMENT</span>
           <h3>Student only, query only</h3>
           <p>The teacher and its privileged channel are discarded. The deployed student is architecturally identical to ARG-Designer: it selects agents and generates edges from the query alone. At \(K=1\) it uses 4.04 LLM calls per query, against 4.00 for ARG-Designer.</p>
