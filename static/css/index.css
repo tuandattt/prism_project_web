@@ -124,3 +124,4 @@ html{scroll-padding-top:64px}
 .stage-card.wide{grid-column:1/-1}
 .stage-card .equation-block{font-size:14px}
 @media(max-width:700px){.equation-block{font-size:12.5px}}
+.paper-title u{text-decoration-thickness:3px;text-underline-offset:6px;text-decoration-color:var(--accent)}
